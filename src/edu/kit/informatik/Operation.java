@@ -59,6 +59,8 @@ final class Operation {
                 return addAssembly();
             case REMOVE_ASSEMBLY:
                 return removeAssembly();
+            case PRINT_ASSEMBLY:
+                return printAssembly();
             default:
                 return new Result<>(null, new Error(Error.Type.OTHER));
         }
@@ -98,5 +100,9 @@ final class Operation {
         } else {
             return new Result<>(null, result.error);
         }
+    }
+
+    private Result<String> printAssembly() {
+        return PartManager.main.printAssemblyWith(parameterString);
     }
 }

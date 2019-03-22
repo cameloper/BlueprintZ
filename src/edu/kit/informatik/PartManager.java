@@ -1,6 +1,8 @@
 package edu.kit.informatik;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 class PartManager {
     /**
@@ -68,5 +70,37 @@ class PartManager {
         }
 
         return new Result<>(null, null);
+    }
+
+    /**
+     * Builds a string with names and amounts of the part with given IDs children
+     *
+     * @param id ID of the part to print
+     * @return Result with string value
+     */
+    Result<String> printAssemblyWith(String id) {
+        if (!list.hasPartWith(id))
+            return new Result<>(null, new Error(Error.Type.PART_DOESNT_EXIST, id));
+
+        Part part = list.getPartWith(id);
+        if (part.getType() == Part.Type.COMPONENT)
+            return new Result<>(Part.Type.COMPONENT.toString(), null);
+
+        HashMap<String, Integer> children = part.getChildren();
+        List<String> childrenSorted = children.keySet().stream().sorted().collect(Collectors.toList());
+
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < childrenSorted.size(); i++) {
+            String child = childrenSorted.get(i);
+            Integer amount = children.get(child);
+
+            out.append(String.format("%s:%d", child, amount));
+
+            if (i != childrenSorted.size() - 1) {
+                out.append(";");
+            }
+        }
+
+        return new Result<>(out.toString(), null);
     }
 }
