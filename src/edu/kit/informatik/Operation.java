@@ -63,6 +63,8 @@ final class Operation {
                 return printAssembly();
             case GET_ASSEMBLIES:
                 return getAssemblies();
+            case GET_COMPONENTS:
+                return getComponents();
             default:
                 return new Result<>(null, new Error(Error.Type.OTHER));
         }
@@ -108,7 +110,11 @@ final class Operation {
         return PartManager.MAIN.printAssemblyWith(parameterString);
     }
 
-    private  Result<String> getAssemblies() {
+    private Result<String> getAssemblies() {
         return PartManager.MAIN.getAssembliesOf(parameterString);
+    }
+
+    private Result<String> getComponents() {
+        return PartManager.MAIN.getComponentsOf(parameterString);
     }
 }

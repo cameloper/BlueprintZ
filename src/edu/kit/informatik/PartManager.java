@@ -14,6 +14,17 @@ class PartManager {
     private static final String EMPTY_STRING = "EMPTY";
     private PartList list = new PartList();
 
+    private Result<Part> getAssemblyWith(String id) {
+        if (!list.contains(id))
+            return new Result<>(null, new Error(Error.Type.PART_DOESNT_EXIST, id));
+
+        Part part = list.getPartWith(id);
+        if (part.getType() == Part.Type.COMPONENT)
+            return new Result<>(null, new Error(Error.Type.PART_IS_COMPONENT, id));
+
+        return new Result<>(part, null);
+    }
+
     /**
      * Adds a new Assembly Part with the given ID and children,
      * if not already present
@@ -59,12 +70,10 @@ class PartManager {
      * @return Result without value
      */
     Result<Void> removeAssemblyWith(String id) {
-        if (!list.contains(id))
-            return new Result<>(null, new Error(Error.Type.PART_DOESNT_EXIST, id));
-
-        Part part = list.getPartWith(id);
-        if (part.getType() == Part.Type.COMPONENT)
-            return new Result<>(null, new Error(Error.Type.PART_IS_COMPONENT, id));
+        Result<Part> partResult = getAssemblyWith(id);
+        if (!partResult.isSuccessful())
+            return new Result<>(null, partResult.error);
+        Part part = partResult.value;
 
         if (list.partHasParents(id)) {
             part.removeAllChildren();
@@ -107,26 +116,8 @@ class PartManager {
         return new Result<>(out.toString(), null);
     }
 
-    /**
-     * Gives every direct and indirect child-assembly of the part
-     * with given ID
-     *
-     * @param id ID of part whose children will be inspected
-     * @return Result with String
-     */
-    Result<String> getAssembliesOf(String id) {
-        if (!list.contains(id))
-            return new Result<>(null, new Error(Error.Type.PART_DOESNT_EXIST, id));
-
-        Part part = list.getPartWith(id);
-        if (part.getType() == Part.Type.COMPONENT)
-            return new Result<>(null, new Error(Error.Type.PART_IS_COMPONENT, id));
-
-        HashMap<Part, Integer> assemblies = list.childrenOf(part, Part.Type.ASSEMBLY);
-        if (assemblies.isEmpty())
-            return new Result<>(EMPTY_STRING, null);
-
-        List<Part> sortedAssemblies = assemblies.entrySet().stream().sorted((o1, o2) -> {
+    private String sortAndBuildString(HashMap<Part, Integer> parts) {
+        List<Part> sortedParts = parts.entrySet().stream().sorted((o1, o2) -> {
             if (!o1.getValue().equals(o2.getValue()))
                 return o2.getValue().compareTo(o1.getValue());
             else
@@ -135,15 +126,58 @@ class PartManager {
         ).collect(Collectors.toList());
 
         StringBuilder out = new StringBuilder();
-        for (int i = 0; i < sortedAssemblies.size(); i++) {
-            Part assembly = sortedAssemblies.get(i);
-            out.append(String.format("%s:%d", assembly.getId(), assemblies.get(assembly)));
+        for (int i = 0; i < sortedParts.size(); i++) {
+            Part assembly = sortedParts.get(i);
+            out.append(String.format("%s:%d", assembly.getId(), parts.get(assembly)));
 
-            if (i != sortedAssemblies.size() - 1)
+            if (i != sortedParts.size() - 1)
                 out.append(";");
-
         }
 
-        return new Result<>(out.toString(), null);
+        return out.toString();
+    }
+
+    /**
+     * Gives every direct and indirect child-assembly of the part
+     * with given ID
+     *
+     * @param id ID of part whose children will be inspected
+     * @return Result with String
+     */
+    Result<String> getAssembliesOf(String id) {
+        Result<Part> partResult = getAssemblyWith(id);
+        if (!partResult.isSuccessful())
+            return new Result<>(null, partResult.error);
+        Part part = partResult.value;
+
+        HashMap<Part, Integer> assemblies = list.childrenOf(part, Part.Type.ASSEMBLY);
+        if (assemblies.isEmpty())
+            return new Result<>(EMPTY_STRING, null);
+
+        String out = sortAndBuildString(assemblies);
+
+        return new Result<>(out, null);
+    }
+
+    /**
+     * Gives every direct and indirect child-component of the part
+     * with given ID
+     *
+     * @param id ID of part whose children will be inspected
+     * @return Result with String
+     */
+    Result<String> getComponentsOf(String id) {
+        Result<Part> partResult = getAssemblyWith(id);
+        if (!partResult.isSuccessful())
+            return new Result<>(null, partResult.error);
+        Part part = partResult.value;
+
+        HashMap<Part, Integer> components = list.childrenOf(part, Part.Type.COMPONENT);
+        if (components.isEmpty())
+            return new Result<>(EMPTY_STRING, null);
+
+        String out = sortAndBuildString(components);
+
+        return new Result<>(out, null);
     }
 }
