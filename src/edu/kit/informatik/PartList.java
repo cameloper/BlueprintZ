@@ -3,6 +3,7 @@ package edu.kit.informatik;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.Map;
 
 class PartList {
     private final ArrayList<Part> parts;
@@ -14,7 +15,7 @@ class PartList {
      */
     PartList(PartList origin) {
         this.parts = new ArrayList<>();
-        for (Part part: origin.parts) {
+        for (Part part : origin.parts) {
             this.parts.add(new Part(part));
         }
     }
@@ -57,8 +58,8 @@ class PartList {
      * @param ids IDs of the parts to add
      */
     void addIfNotPresent(Set<String> ids) {
-        for (String id: ids) {
-            if (!hasPartWith(id)) {
+        for (String id : ids) {
+            if (!contains(id)) {
                 parts.add(new Part(id, new HashMap<>()));
             }
         }
@@ -79,7 +80,7 @@ class PartList {
      * @param id ID to check
      * @return true if such a part exist, otherwise false
      */
-    boolean hasPartWith(String id) {
+    boolean contains(String id) {
         for (Part p : parts) {
             if (p.getId().equals(id)) {
                 return true;
@@ -105,7 +106,7 @@ class PartList {
     }
 
     private String partIsFreeOf(Part part, String parents) {
-        for (String child: part.getChildren().keySet()) {
+        for (String child : part.getChildren().keySet()) {
             if (parents.contains(child)) {
                 return child;
             }
@@ -127,5 +128,46 @@ class PartList {
      */
     boolean partHasParents(String id) {
         return parts.stream().anyMatch(p -> p.getChildren().keySet().stream().anyMatch(s -> s.equals(id)));
+    }
+
+    /**
+     * Recursively goes through child parts and counts
+     * amount of each part of the given type.
+     *
+     * @param part Starting part
+     * @param type Type of parts that should be counted
+     * @return Total count of each part with type
+     */
+    HashMap<Part, Integer> childrenOf(Part part, Part.Type type) {
+        HashMap<Part, Integer> out = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : part.getChildren().entrySet()) {
+            Part child = getPartWith(entry.getKey());
+            if (child.getType() == type) {
+                if (out.containsKey(child))
+                    out.put(child, out.get(child) + entry.getValue());
+                else
+                    out.put(child, entry.getValue());
+            }
+
+            if (!child.getChildren().isEmpty())
+                merge(out, childrenOf(child, type), entry.getValue());
+        }
+
+        return out;
+
+    }
+
+    private void merge(HashMap<Part, Integer> left,
+                       HashMap<Part, Integer> right,
+                       Integer multiplier) {
+        for (Map.Entry<Part, Integer> entry : right.entrySet()) {
+            Part key = entry.getKey();
+            if (left.containsKey(key)) {
+                left.put(key, left.get(key) + multiplier * entry.getValue());
+                continue;
+            }
+
+            left.put(key, multiplier * entry.getValue());
+        }
     }
 }

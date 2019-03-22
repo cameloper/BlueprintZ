@@ -61,6 +61,8 @@ final class Operation {
                 return removeAssembly();
             case PRINT_ASSEMBLY:
                 return printAssembly();
+            case GET_ASSEMBLIES:
+                return getAssemblies();
             default:
                 return new Result<>(null, new Error(Error.Type.OTHER));
         }
@@ -104,5 +106,9 @@ final class Operation {
 
     private Result<String> printAssembly() {
         return PartManager.MAIN.printAssemblyWith(parameterString);
+    }
+
+    private  Result<String> getAssemblies() {
+        return PartManager.MAIN.getAssembliesOf(parameterString);
     }
 }

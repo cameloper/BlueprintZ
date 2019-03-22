@@ -2,13 +2,16 @@ package edu.kit.informatik;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 class PartManager {
+
     /**
      * Main instance of PartManager
      */
     static final PartManager MAIN = new PartManager();
+    private static final String EMPTY_STRING = "EMPTY";
     private PartList list = new PartList();
 
     /**
@@ -56,7 +59,7 @@ class PartManager {
      * @return Result without value
      */
     Result<Void> removeAssemblyWith(String id) {
-        if (!list.hasPartWith(id))
+        if (!list.contains(id))
             return new Result<>(null, new Error(Error.Type.PART_DOESNT_EXIST, id));
 
         Part part = list.getPartWith(id);
@@ -79,7 +82,7 @@ class PartManager {
      * @return Result with string value
      */
     Result<String> printAssemblyWith(String id) {
-        if (!list.hasPartWith(id))
+        if (!list.contains(id))
             return new Result<>(null, new Error(Error.Type.PART_DOESNT_EXIST, id));
 
         Part part = list.getPartWith(id);
@@ -99,6 +102,46 @@ class PartManager {
             if (i != childrenSorted.size() - 1) {
                 out.append(";");
             }
+        }
+
+        return new Result<>(out.toString(), null);
+    }
+
+    /**
+     * Gives every direct and indirect child-assembly of the part
+     * with given ID
+     *
+     * @param id ID of part whose children will be inspected
+     * @return Result with String
+     */
+    Result<String> getAssembliesOf(String id) {
+        if (!list.contains(id))
+            return new Result<>(null, new Error(Error.Type.PART_DOESNT_EXIST, id));
+
+        Part part = list.getPartWith(id);
+        if (part.getType() == Part.Type.COMPONENT)
+            return new Result<>(null, new Error(Error.Type.PART_IS_COMPONENT, id));
+
+        HashMap<Part, Integer> assemblies = list.childrenOf(part, Part.Type.ASSEMBLY);
+        if (assemblies.isEmpty())
+            return new Result<>(EMPTY_STRING, null);
+
+        List<Part> sortedAssemblies = assemblies.entrySet().stream().sorted((o1, o2) -> {
+            if (!o1.getValue().equals(o2.getValue()))
+                return o2.getValue().compareTo(o1.getValue());
+            else
+                return o1.getKey().getId().compareTo(o2.getKey().getId());
+        }).map(Map.Entry::getKey
+        ).collect(Collectors.toList());
+
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < sortedAssemblies.size(); i++) {
+            Part assembly = sortedAssemblies.get(i);
+            out.append(String.format("%s:%d", assembly.getId(), assemblies.get(assembly)));
+
+            if (i != sortedAssemblies.size() - 1)
+                out.append(";");
+
         }
 
         return new Result<>(out.toString(), null);
