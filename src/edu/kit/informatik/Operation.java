@@ -1,5 +1,9 @@
 package edu.kit.informatik;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 class Operation {
     private static final String COMMAND_PARAMETER_SEPARATOR = " ";
 
@@ -20,18 +24,18 @@ class Operation {
     static Result<Operation> buildWith(String input) {
         String[] cmdComponents = input.split(COMMAND_PARAMETER_SEPARATOR);
         if (cmdComponents.length < 1)
-            return new Result<>(new Error(Error.Type.NO_INPUT));
+            return new Result<>(null, new Error(Error.Type.NO_INPUT));
 
         Command cmd = Command.build(cmdComponents[0]);
         if (cmd == null)
-            return new Result<>(new Error(Error.Type.CMD_NOT_VALID));
+            return new Result<>(null, new Error(Error.Type.CMD_NOT_VALID));
 
         String parameters = "";
 
         if (cmdComponents.length == 2)
             parameters = cmdComponents[1];
 
-        return new Result<>(new Operation(cmd, parameters));
+        return new Result<>(new Operation(cmd, parameters), null);
     }
 
     /**
@@ -52,9 +56,35 @@ class Operation {
         switch (command) {
             case QUIT:
                 BlueprintZ.isListening = false;
-                return new Result<>("");
+                return new Result<>("", null);
+            case ADD_ASSEMBLY:
+                return addAssembly();
             default:
-                return new Result<>(new Error(Error.Type.OTHER));
+                return new Result<>(null, new Error(Error.Type.OTHER));
+        }
+    }
+
+    private Result<String> addAssembly() {
+        String[] parameters = parameterString.split("=");
+
+        String id = parameters[0];
+
+        try {
+            HashMap<String, Integer> children = new HashMap<>();
+            for (String s : parameters[1].split(";")) {
+                String[] p = s.split(":");
+                children.put(p[1], Integer.parseInt(p[0]));
+            }
+
+            Result<Void> result = PartManager.main.addAssemblyWith(id, children);
+            if (result.isSuccessful()) {
+                return new Result<>("OK", null);
+            } else {
+                return new Result<>(null, result.error);
+            }
+
+        } catch (NumberFormatException nEx) {
+            return new Result<>(null, new Error(Error.Type.NUMBER_NOT_VALID));
         }
     }
 }

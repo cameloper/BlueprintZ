@@ -2,19 +2,19 @@ package edu.kit.informatik;
 
 enum Command {
     /**
-     * Adds a new Group object
+     * Adds a new assembly Part
      */
     ADD_ASSEMBLY("addAssembly"),
     /**
-     * Prints contents of a Group object
+     * Prints contents of a assembly Part
      */
     PRINT_ASSEMBLY("printAssembly"),
     /**
-     * Lists all child-groups of a Group
+     * Lists all child-assemblies of an assembly
      */
     GET_ASSEMBLIES("getAssemblies"),
     /**
-     * Lists all materials of a Group
+     * Lists all child-components of an assembly
      */
     GET_COMPONENTS("getComponents"),
     /**

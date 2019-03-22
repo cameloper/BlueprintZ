@@ -45,6 +45,22 @@ class Error {
          */
         PARAM_NOT_VALID,
         /**
+         * Failed to cast a number parameter to Integer
+         */
+        NUMBER_NOT_VALID,
+        /**
+         * Given number is not in the correct range.
+         */
+        NUMBER_NOT_IN_RANGE,
+        /**
+         * And assembly with the given id already exists
+         */
+        ASSEMBLY_ALREADY_EXISTS,
+        /**
+         * The changes that have been made cause a cycle
+         */
+        NOT_ACYCLIC,
+        /**
          * something went wrong
          */
         OTHER;
@@ -57,6 +73,14 @@ class Error {
                     return "the given text does not refer to a valid command.";
                 case PARAM_NOT_VALID:
                     return "the parameters you entered for this command are not valid.";
+                case NUMBER_NOT_VALID:
+                    return "one or more of the given numbers are not in correct format.";
+                case NUMBER_NOT_IN_RANGE:
+                    return "at least one given number is not in the accepted range (1-1000)";
+                case ASSEMBLY_ALREADY_EXISTS:
+                    return "the assembly with id \"$p\" already exists";
+                case NOT_ACYCLIC:
+                    return "such an alteration causes a cycle through Assembly $p and thus cannot be made.";
                 default:
                     return "something happened. No idea tbh";
             }

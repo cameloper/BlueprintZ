@@ -15,27 +15,16 @@ class Result<T> {
     private final Type type;
 
     /**
-     * New Result builder with only a value.
-     * Use if result is a success
+     * New Result builder with value and error
      *
      * @param value result value of a particular operation
+     * @param error the cause of failure, if present
      */
-    Result(T value) {
+    Result(T value, Error error) {
         this.value = value;
-        this.error = null;
-        this.type = Type.SUCCESS;
-    }
-
-    /**
-     * New Result builder with only an error
-     * Use if result is a failure
-     *
-     * @param error error that caused an operation to fail
-     */
-    Result(Error error) {
-        this.value = null;
         this.error = error;
-        this.type = Type.FAILURE;
+
+        this.type = value == null && error != null ? Type.FAILURE : Type.SUCCESS;
     }
 
     /**
