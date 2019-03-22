@@ -1,10 +1,8 @@
 package edu.kit.informatik;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 
-class Operation {
+final class Operation {
     private static final String COMMAND_PARAMETER_SEPARATOR = " ";
 
     private Command command;

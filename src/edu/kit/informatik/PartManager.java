@@ -2,13 +2,21 @@ package edu.kit.informatik;
 
 import java.util.HashMap;
 
-public class PartManager {
+class PartManager {
     /**
      * Main instance of PartManager
      */
-    public static PartManager main = new PartManager();
+    static PartManager main = new PartManager();
     private PartList list = new PartList();
 
+    /**
+     * Adds a new Assembly Part with the given ID and children,
+     * if not already present
+     *
+     * @param id Unique ID of the new Part
+     * @param children IDs of the children Parts
+     * @return Result without a value
+     */
     Result<Void> addAssemblyWith(String id, HashMap<String, Integer> children) {
         if (children.values().stream().anyMatch(v -> v < 1)) {
             return new Result<>(null, new Error(Error.Type.NUMBER_NOT_IN_RANGE));

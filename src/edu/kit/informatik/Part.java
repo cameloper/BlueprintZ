@@ -7,6 +7,11 @@ class Part {
     private String id;
     private HashMap<String, Integer> children;
 
+    /**
+     * Creates a new {@link Part} object using the properties of given one
+     *
+     * @param origin The part object to be cloned
+     */
     Part(Part origin) {
         this.id = origin.id;
         this.children = new HashMap<>();

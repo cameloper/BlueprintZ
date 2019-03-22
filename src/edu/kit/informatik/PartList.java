@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-public class PartList {
+class PartList {
     private ArrayList<Part> parts;
 
+    /**
+     * Creates a new {@link PartList} object using the properties of given one
+     *
+     * @param origin The partlist to be cloned
+     */
     PartList(PartList origin) {
         this.parts = new ArrayList<>();
         for (Part part: origin.parts) {
@@ -14,10 +19,19 @@ public class PartList {
         }
     }
 
+    /**
+     * Empty constructor for {@link PartList}
+     */
     PartList() {
         this.parts = new ArrayList<>();
     }
 
+    /**
+     * Method to gather a Part object with given ID
+     *
+     * @param id ID of requested Part object
+     * @return {@link Part} with given ID, if present
+     */
     Part getPartWith(String id) {
         for (Part p : parts) {
             if (p.getId().equals(id)) {
@@ -27,10 +41,21 @@ public class PartList {
         return null;
     }
 
+    /**
+     * Adds the given part in PartList
+     *
+     * @param part Part to add
+     */
     void addPart(Part part) {
         parts.add(part);
     }
 
+    /**
+     * Adds a new Part with each ID in the given set, if they
+     * are not already present.
+     *
+     * @param ids IDs of the parts to add
+     */
     void addIfNotPresent(Set<String> ids) {
         for (String id: ids) {
             if (!hasPartWith(id)) {
@@ -39,6 +64,12 @@ public class PartList {
         }
     }
 
+    /**
+     * Says whether a part with the given ID is present or not
+     *
+     * @param id ID to check
+     * @return true if such a part exist, otherwise false
+     */
     boolean hasPartWith(String id) {
         for (Part p : parts) {
             if (p.getId().equals(id)) {
@@ -48,6 +79,11 @@ public class PartList {
         return false;
     }
 
+    /**
+     * Searches for an unwanted cycle through each part.
+     *
+     * @return ID of the part that contains one or more of its ancestors
+     */
     String cycleRoot() {
         for (Part p : parts) {
             String result = partIsFreeOf(p, "");
