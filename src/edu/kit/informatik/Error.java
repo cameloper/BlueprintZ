@@ -65,6 +65,18 @@ class Error {
          */
         NOT_ACYCLIC,
         /**
+         * There is no part with given ID
+         */
+        PART_DOESNT_EXIST,
+        /**
+         * The part with given ID is an assembly
+         */
+        PART_IS_ASSEMBLY,
+        /**
+         * The part with given ID is a component
+         */
+        PART_IS_COMPONENT,
+        /**
          * Something went wrong
          */
         OTHER;
@@ -82,13 +94,19 @@ class Error {
                 case NUMBER_NOT_VALID:
                     return "one or more of the given numbers are not in correct format.";
                 case NUMBER_NOT_IN_RANGE:
-                    return "at least one given number is not in the accepted range (1-1000)";
+                    return "at least one given number is not in the accepted range (1-1000).";
                 case ASSEMBLY_ALREADY_EXISTS:
-                    return "the assembly with id \"$p\" already exists";
+                    return "the assembly with id \"$p\" already exists.";
                 case NOT_ACYCLIC:
                     return "such an alteration causes a cycle through Assembly $p and thus cannot be made.";
+                case PART_DOESNT_EXIST:
+                    return "there isn't any part with the given ID \"$p\".";
+                case PART_IS_ASSEMBLY:
+                    return "the part with given ID \"$p\" is an assembly.";
+                case PART_IS_COMPONENT:
+                    return "the part with given ID \"$p\" is a component.";
                 default:
-                    return "something happened. No idea tbh";
+                    return "something happened. No idea tbh.";
             }
         }
     }

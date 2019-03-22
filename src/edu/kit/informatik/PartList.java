@@ -65,6 +65,15 @@ class PartList {
     }
 
     /**
+     * Removes the given part from list.
+     *
+     * @param part Part to be removed
+     */
+    void removePart(Part part) {
+        parts.remove(part);
+    }
+
+    /**
      * Says whether a part with the given ID is present or not
      *
      * @param id ID to check
@@ -108,5 +117,15 @@ class PartList {
         }
 
         return null;
+    }
+
+    /**
+     * Searches through children of each part for the given ID
+     *
+     * @param id ID of part to search for
+     * @return true if any other part has the given ID as child
+     */
+    boolean partHasParents(String id) {
+        return parts.stream().anyMatch(p -> p.getChildren().keySet().stream().anyMatch(s -> s.equals(id)));
     }
 }

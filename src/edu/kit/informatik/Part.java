@@ -89,6 +89,13 @@ class Part {
     }
 
     /**
+     * Replaces the current children with an empty HashMap
+     */
+    void removeAllChildren() {
+        children = new HashMap<>();
+    }
+
+    /**
      * Gives whether the Part is assembly or component
      *
      * @return Assembly or component

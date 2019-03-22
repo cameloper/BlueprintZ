@@ -57,6 +57,8 @@ final class Operation {
                 return new Result<>("", null);
             case ADD_ASSEMBLY:
                 return addAssembly();
+            case REMOVE_ASSEMBLY:
+                return removeAssembly();
             default:
                 return new Result<>(null, new Error(Error.Type.OTHER));
         }
@@ -85,6 +87,16 @@ final class Operation {
 
         } catch (NumberFormatException nEx) {
             return new Result<>(null, new Error(Error.Type.NUMBER_NOT_VALID));
+        }
+    }
+
+    private Result<String> removeAssembly() {
+        Result<Void> result = PartManager.main.removeAssemblyWith(parameterString);
+
+        if (result.isSuccessful()) {
+            return new Result<>("OK", null);
+        } else {
+            return new Result<>(null, result.error);
         }
     }
 }

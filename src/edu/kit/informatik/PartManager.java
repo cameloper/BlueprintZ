@@ -46,4 +46,27 @@ class PartManager {
         return new Result<>(null, null);
 
     }
+
+    /**
+     * Removes the assembly with given ID if present
+     *
+     * @param id ID of the part to remove
+     * @return Result without value
+     */
+    Result<Void> removeAssemblyWith(String id) {
+        if (!list.hasPartWith(id))
+            return new Result<>(null, new Error(Error.Type.PART_DOESNT_EXIST, id));
+
+        Part part = list.getPartWith(id);
+        if (part.getType() == Part.Type.COMPONENT)
+            return new Result<>(null, new Error(Error.Type.PART_IS_COMPONENT, id));
+
+        if (list.partHasParents(id)) {
+            part.removeAllChildren();
+        } else {
+            list.removePart(part);
+        }
+
+        return new Result<>(null, null);
+    }
 }

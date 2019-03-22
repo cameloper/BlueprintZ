@@ -6,6 +6,10 @@ enum Command {
      */
     ADD_ASSEMBLY("addAssembly"),
     /**
+     * Removes the assembly part with given ID
+     */
+    REMOVE_ASSEMBLY("removeAssembly"),
+    /**
      * Prints contents of a assembly Part
      */
     PRINT_ASSEMBLY("printAssembly"),
@@ -78,6 +82,7 @@ enum Command {
             case GET_ASSEMBLIES:
             case GET_COMPONENTS:
             case PRINT_ASSEMBLY:
+            case REMOVE_ASSEMBLY:
                 return pnr;
             default:
                 return "";
