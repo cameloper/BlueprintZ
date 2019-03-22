@@ -36,7 +36,12 @@ enum Command {
 
     private String rawValue;
 
-    private Command(String input) {
+    /**
+     * Default constructor for Command
+     *
+     * @param input case value
+     */
+    Command(String input) {
         rawValue = input;
     }
 
