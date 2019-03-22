@@ -40,6 +40,7 @@ class Result<T> {
 
     /**
      * Boolean method whether the operation type is success or failure
+     *
      * @return true if successful, otherwise false
      */
     boolean isSuccessful() {

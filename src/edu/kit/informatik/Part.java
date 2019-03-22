@@ -6,6 +6,12 @@ class Part {
     private String id;
     private HashMap<String, Integer> children;
 
+    /**
+     * Default constructor of Part
+     *
+     * @param id       by-user-given id of Part
+     * @param children If part is assembly, child Parts
+     */
     public Part(String id, HashMap<String, Integer> children) {
         this.id = id;
         this.children = children;
@@ -20,6 +26,11 @@ class Part {
         return id;
     }
 
+    /**
+     * Gives whether the Part is assembly or component
+     *
+     * @return Assembly or component
+     */
     Type getType() {
         if (children.isEmpty())
             return Type.COMPONENT;
@@ -28,7 +39,13 @@ class Part {
     }
 
     enum Type {
+        /**
+         * Group Parts that include other Parts
+         */
         ASSEMBLY,
+        /**
+         * End-Node parts without any children
+         */
         COMPONENT
     }
 }
