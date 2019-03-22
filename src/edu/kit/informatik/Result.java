@@ -38,6 +38,10 @@ class Result<T> {
         this.type = Type.FAILURE;
     }
 
+    /**
+     * Boolean method whether the operation type is success or failure
+     * @return true if successful, otherwise false
+     */
     boolean isSuccessful() {
         return type == Type.SUCCESS;
     }

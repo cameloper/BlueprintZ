@@ -41,6 +41,10 @@ class Error {
          */
         CMD_NOT_VALID,
         /**
+         * user gave invalid parameters
+         */
+        PARAM_NOT_VALID,
+        /**
          * something went wrong
          */
         OTHER;
@@ -51,6 +55,8 @@ class Error {
                     return "please enter a valid command!";
                 case CMD_NOT_VALID:
                     return "the given text does not refer to a valid command.";
+                case PARAM_NOT_VALID:
+                    return "the parameters you entered for this command are not valid.";
                 default:
                     return "something happened. No idea tbh";
             }
