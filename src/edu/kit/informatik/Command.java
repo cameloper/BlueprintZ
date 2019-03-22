@@ -74,7 +74,7 @@ enum Command {
         String ar = BlueprintZ.Defaults.AMOUNT_REGEX;
         switch (this) {
             case ADD_PART:
-                return pnr + "+" + ar + ":" + pnr;
+                return pnr + "\\+" + ar + ":" + pnr;
             case REMOVE_PART:
                 return pnr + "-" + ar + ":" + pnr;
             case ADD_ASSEMBLY:

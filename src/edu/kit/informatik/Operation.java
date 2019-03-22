@@ -54,7 +54,7 @@ final class Operation {
         switch (command) {
             case QUIT:
                 BlueprintZ.isListening = false;
-                return new Result<>("", null);
+                return new Result<>(null, null);
             case ADD_ASSEMBLY:
                 return addAssembly();
             case REMOVE_ASSEMBLY:

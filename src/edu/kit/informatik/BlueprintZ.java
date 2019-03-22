@@ -26,22 +26,32 @@ public class BlueprintZ {
     private static void go(String input) {
         Result<Operation> operationResult = Operation.buildWith(input);
         if (!operationResult.isSuccessful()) {
-            Terminal.printError(operationResult.error.toString());
+            printError(operationResult.error);
             return;
         }
 
         Operation operation = operationResult.value;
         if (!operation.validate()) {
-            Terminal.printError(new Error(Error.Type.PARAM_NOT_VALID).toString());
+            printError(new Error(Error.Type.PARAM_NOT_VALID));
             return;
         }
 
         Result<String> executionResult = operation.execute();
         if (executionResult.isSuccessful()) {
-            Terminal.printLine(executionResult.value);
+            printLine(executionResult.value);
         } else {
-            Terminal.printError(executionResult.error.toString());
+            printError(executionResult.error);
         }
+    }
+
+    private static void printLine(Object obj) {
+        if (obj != null)
+            Terminal.printLine(obj);
+    }
+
+    private static void printError(Error error) {
+        if (error != null)
+            Terminal.printError(error.toString());
     }
 
     class Defaults {
