@@ -5,8 +5,8 @@ import java.util.HashMap;
 final class Operation {
     private static final String COMMAND_PARAMETER_SEPARATOR = " ";
 
-    private Command command;
-    private String parameterString;
+    private final Command command;
+    private final String parameterString;
 
     private Operation(Command command, String parameterString) {
         this.command = command;
@@ -80,7 +80,7 @@ final class Operation {
                 children.put(p[1], Integer.parseInt(p[0]));
             }
 
-            Result<Void> result = PartManager.main.addAssemblyWith(id, children);
+            Result<Void> result = PartManager.MAIN.addAssemblyWith(id, children);
             if (result.isSuccessful()) {
                 return new Result<>("OK", null);
             } else {
@@ -93,7 +93,7 @@ final class Operation {
     }
 
     private Result<String> removeAssembly() {
-        Result<Void> result = PartManager.main.removeAssemblyWith(parameterString);
+        Result<Void> result = PartManager.MAIN.removeAssemblyWith(parameterString);
 
         if (result.isSuccessful()) {
             return new Result<>("OK", null);
@@ -103,6 +103,6 @@ final class Operation {
     }
 
     private Result<String> printAssembly() {
-        return PartManager.main.printAssemblyWith(parameterString);
+        return PartManager.MAIN.printAssemblyWith(parameterString);
     }
 }

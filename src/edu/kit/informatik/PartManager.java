@@ -8,7 +8,7 @@ class PartManager {
     /**
      * Main instance of PartManager
      */
-    static PartManager main = new PartManager();
+    static final PartManager MAIN = new PartManager();
     private PartList list = new PartList();
 
     /**

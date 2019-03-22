@@ -34,7 +34,7 @@ enum Command {
      */
     QUIT("quit");
 
-    private String rawValue;
+    private final String rawValue;
 
     /**
      * Default constructor for Command
@@ -58,15 +58,6 @@ enum Command {
         }
 
         return null;
-    }
-
-    /**
-     * Getter of RawValue
-     *
-     * @return value of private variable RawValue
-     */
-    String getRawValue() {
-        return rawValue;
     }
 
     /**

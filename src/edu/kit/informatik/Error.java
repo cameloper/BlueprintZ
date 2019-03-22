@@ -3,7 +3,7 @@ package edu.kit.informatik;
 class Error {
     private static final String REPLACEMENT_CHAR = "\\$p";
 
-    private Type type;
+    private final Type type;
     private String replacement;
 
     /**

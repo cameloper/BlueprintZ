@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 class Part {
-    private String id;
+    private final String id;
     private HashMap<String, Integer> children;
 
     /**
@@ -47,15 +47,6 @@ class Part {
      */
     HashMap<String, Integer> getChildren() {
         return children;
-    }
-
-    /**
-     * Public setter for children
-     *
-     * @param children New value for variable
-     */
-    void setChildren(HashMap<String, Integer> children) {
-        this.children = children;
     }
 
     /**

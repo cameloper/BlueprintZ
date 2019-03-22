@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.Set;
 
 class PartList {
-    private ArrayList<Part> parts;
+    private final ArrayList<Part> parts;
 
     /**
      * Creates a new {@link PartList} object using the properties of given one
      *
-     * @param origin The partlist to be cloned
+     * @param origin The {@link PartList} to be cloned
      */
     PartList(PartList origin) {
         this.parts = new ArrayList<>();
