@@ -60,4 +60,20 @@ enum Command {
         return rawValue;
     }
 
+    String getRegex() {
+        String pnr = BlueprintZ.Defaults.PART_NAME_REGEX;
+        String ar = BlueprintZ.Defaults.AMOUNT_REGEX;
+        switch (this) {
+            case QUIT:
+                return "";
+            case ADD_PART:
+                return pnr + "+" + ar + ":" + pnr;
+            case REMOVE_PART:
+                return pnr + "-" + ar + ":" + pnr;
+            case ADD_ASSEMBLY:
+                return String.format("%s=(%s:%s;)*(%s:%s)", pnr, ar, pnr, ar, pnr);
+
+        }
+    }
+
 }

@@ -28,4 +28,9 @@ public class BlueprintZ {
         if (!operationResult.isSuccessful())
             Terminal.printError(operationResult.error.toString());
     }
+
+    class Defaults {
+        static final String PART_NAME_REGEX = "[a-zA-Z]+";
+        static final String AMOUNT_REGEX = "(1000|([0-9]{1,3}))";
+    }
 }
