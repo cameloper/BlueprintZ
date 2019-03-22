@@ -12,7 +12,7 @@ class Result<T> {
     /**
      * Whether the result is successful or not
      */
-    final Type type;
+    private final Type type;
 
     /**
      * New Result builder with only a value.
@@ -36,6 +36,10 @@ class Result<T> {
         this.value = null;
         this.error = error;
         this.type = Type.FAILURE;
+    }
+
+    boolean isSuccessful() {
+        return type == Type.SUCCESS;
     }
 
     enum Type {
