@@ -71,6 +71,8 @@ final class Operation {
             HashMap<String, Integer> children = new HashMap<>();
             for (String s : parameters[1].split(";")) {
                 String[] p = s.split(":");
+                if (children.keySet().stream().anyMatch(sp -> sp.equals(p[1])))
+                    return new Result<>(null, new Error(Error.Type.MULTIPLE_PART_REFERENCES, p[1]));
                 children.put(p[1], Integer.parseInt(p[0]));
             }
 

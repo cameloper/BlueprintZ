@@ -33,17 +33,21 @@ class Error {
 
     enum Type {
         /**
-         * user didn't type in anything
+         * User didn't type in anything
          */
         NO_INPUT,
         /**
-         * user entered an invalid text
+         * User entered an invalid text
          */
         CMD_NOT_VALID,
         /**
-         * user gave invalid parameters
+         * User gave invalid parameters
          */
         PARAM_NOT_VALID,
+        /**
+         * User gave multiple references to the same part
+         */
+        MULTIPLE_PART_REFERENCES,
         /**
          * Failed to cast a number parameter to Integer
          */
@@ -61,7 +65,7 @@ class Error {
          */
         NOT_ACYCLIC,
         /**
-         * something went wrong
+         * Something went wrong
          */
         OTHER;
 
@@ -73,6 +77,8 @@ class Error {
                     return "the given text does not refer to a valid command.";
                 case PARAM_NOT_VALID:
                     return "the parameters you entered for this command are not valid.";
+                case MULTIPLE_PART_REFERENCES:
+                    return "name of Part \"$p\" has been written more than once!";
                 case NUMBER_NOT_VALID:
                     return "one or more of the given numbers are not in correct format.";
                 case NUMBER_NOT_IN_RANGE:
