@@ -204,10 +204,11 @@ class PartManager {
      * @return Result without value
      */
     Result<Void> addPart(String toId, String id, Integer amount) {
-        if (!list.contains(toId))
-            return new Result<>(null, new Error(Error.Type.PART_DOESNT_EXIST, toId));
+        Result<Part> partResult = getAssemblyWith(toId);
+        if (!partResult.isSuccessful())
+            return new Result<>(null, partResult.error);
+        Part targetPart = partResult.value;
 
-        Part targetPart = list.getPartWith(toId);
         list.addIfNotPresent(id);
         targetPart.addChild(id, amount);
 
