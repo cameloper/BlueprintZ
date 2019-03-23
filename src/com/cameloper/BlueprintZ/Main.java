@@ -1,6 +1,8 @@
-package edu.kit.informatik;
+package com.cameloper.BlueprintZ;
 
-public class BlueprintZ {
+import edu.kit.informatik.Terminal;
+
+public class Main {
 
     /**
      * Decides whether the program should continue listening for commands

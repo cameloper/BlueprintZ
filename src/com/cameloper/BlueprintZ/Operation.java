@@ -1,4 +1,4 @@
-package edu.kit.informatik;
+package com.cameloper.BlueprintZ;
 
 import java.util.HashMap;
 
@@ -27,7 +27,7 @@ final class Operation {
      * @return Result of the build
      */
     static Result<Operation> buildWith(String input) {
-        String[] cmdComponents = input.split(BlueprintZ.Defaults.COMMAND_PARAMETER_SEPARATOR);
+        String[] cmdComponents = input.split(Main.Defaults.COMMAND_PARAMETER_SEPARATOR);
         if (cmdComponents.length < 1)
             return new Result<>(null, new Error(Error.Type.NO_INPUT));
 
@@ -60,7 +60,7 @@ final class Operation {
     Result<String> execute() {
         switch (command) {
             case QUIT:
-                BlueprintZ.isListening = false;
+                Main.isListening = false;
                 return new Result<>(null, null);
             case ADD_ASSEMBLY:
                 return addAssembly();
@@ -82,18 +82,18 @@ final class Operation {
     }
 
     private Result<String> addAssembly() {
-        String[] parameters = parameterString.split(BlueprintZ.Defaults.SETTER_LITERAL);
+        String[] parameters = parameterString.split(Main.Defaults.SETTER_LITERAL);
         String id = parameters[INPUT_ID_INDEX];
 
         try {
             HashMap<String, Integer> children = new HashMap<>();
-            for (String naPairString : parameters[INPUT_NA_PAIR_INDEX].split(BlueprintZ.Defaults.PART_SEPARATOR)) {
-                String[] naPair = naPairString.split(BlueprintZ.Defaults.NAME_AMOUNT_SEPARATOR);
+            for (String naPairString : parameters[INPUT_NA_PAIR_INDEX].split(Main.Defaults.PART_SEPARATOR)) {
+                String[] naPair = naPairString.split(Main.Defaults.NAME_AMOUNT_SEPARATOR);
                 String name = naPair[NA_PAIR_NAME_INDEX];
                 if (children.keySet().stream().anyMatch(sp -> sp.equals(name)))
                     return new Result<>(null, new Error(Error.Type.MULTIPLE_PART_REFERENCES, name));
                 Integer amount = Integer.parseInt(naPair[NA_PAIR_AMOUNT_INDEX]);
-                if (amount < BlueprintZ.Defaults.MIN_AMOUNT)
+                if (amount < Main.Defaults.MIN_AMOUNT)
                     return new Result<>(null, new Error(Error.Type.NUMBER_NOT_IN_RANGE, amount.toString()));
                 children.put(name, amount);
             }
@@ -133,16 +133,16 @@ final class Operation {
     }
 
     private Result<String> addPart() {
-        String[] parameters = parameterString.split("\\" + BlueprintZ.Defaults.ADD_LITERAL);
+        String[] parameters = parameterString.split("\\" + Main.Defaults.ADD_LITERAL);
         String toId = parameters[INPUT_ID_INDEX];
-        String[] naPair = parameters[INPUT_NA_PAIR_INDEX].split(BlueprintZ.Defaults.NAME_AMOUNT_SEPARATOR);
+        String[] naPair = parameters[INPUT_NA_PAIR_INDEX].split(Main.Defaults.NAME_AMOUNT_SEPARATOR);
 
         String id = naPair[NA_PAIR_NAME_INDEX];
         String amountString = naPair[NA_PAIR_AMOUNT_INDEX];
 
         try {
             int amount = Integer.parseInt(amountString);
-            if (amount < BlueprintZ.Defaults.MIN_AMOUNT)
+            if (amount < Main.Defaults.MIN_AMOUNT)
                 return new Result<>(null, new Error(Error.Type.NUMBER_NOT_IN_RANGE, Integer.toString(amount)));
 
             Result<Void> result = PartManager.MAIN.addPart(toId, id, amount);
@@ -157,16 +157,16 @@ final class Operation {
     }
 
     private Result<String> removePart() {
-        String[] parameters = parameterString.split(BlueprintZ.Defaults.SUBTRACT_LITERAL);
+        String[] parameters = parameterString.split(Main.Defaults.SUBTRACT_LITERAL);
         String fromId = parameters[INPUT_ID_INDEX];
-        String[] naPair = parameters[INPUT_NA_PAIR_INDEX].split(BlueprintZ.Defaults.NAME_AMOUNT_SEPARATOR);
+        String[] naPair = parameters[INPUT_NA_PAIR_INDEX].split(Main.Defaults.NAME_AMOUNT_SEPARATOR);
 
         String id = naPair[NA_PAIR_NAME_INDEX];
         String amountString = naPair[NA_PAIR_AMOUNT_INDEX];
 
         try {
             int amount = Integer.parseInt(amountString);
-            if (amount < BlueprintZ.Defaults.MIN_AMOUNT)
+            if (amount < Main.Defaults.MIN_AMOUNT)
                 return new Result<>(null, new Error(Error.Type.NUMBER_NOT_IN_RANGE, Integer.toString(amount)));
 
             Result<Void> result = PartManager.MAIN.removePart(fromId, id, amount);

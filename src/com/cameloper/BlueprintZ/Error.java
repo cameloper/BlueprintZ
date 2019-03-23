@@ -1,4 +1,4 @@
-package edu.kit.informatik;
+package com.cameloper.BlueprintZ;
 
 class Error {
     private static final String REPLACEMENT_CHAR = "\\$p";

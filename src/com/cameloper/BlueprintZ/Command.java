@@ -1,4 +1,4 @@
-package edu.kit.informatik;
+package com.cameloper.BlueprintZ;
 
 enum Command {
     /**
@@ -66,22 +66,22 @@ enum Command {
      * @return Regex literal
      */
     String getRegex() {
-        String pnr = BlueprintZ.Defaults.PART_NAME_REGEX;
-        String ar = BlueprintZ.Defaults.AMOUNT_REGEX;
-        String naSL = BlueprintZ.Defaults.NAME_AMOUNT_SEPARATOR;
+        String pnr = Main.Defaults.PART_NAME_REGEX;
+        String ar = Main.Defaults.AMOUNT_REGEX;
+        String naSL = Main.Defaults.NAME_AMOUNT_SEPARATOR;
         switch (this) {
             case ADD_PART:
-                return pnr + "\\" + BlueprintZ.Defaults.ADD_LITERAL + ar + naSL + pnr;
+                return pnr + "\\" + Main.Defaults.ADD_LITERAL + ar + naSL + pnr;
             case REMOVE_PART:
-                return pnr + BlueprintZ.Defaults.SUBTRACT_LITERAL + ar + naSL + pnr;
+                return pnr + Main.Defaults.SUBTRACT_LITERAL + ar + naSL + pnr;
             case ADD_ASSEMBLY:
                 return String.format("%s%s(%s%s%s%s)*(%s%s%s)",
                         pnr,
-                        BlueprintZ.Defaults.SETTER_LITERAL,
+                        Main.Defaults.SETTER_LITERAL,
                         ar,
                         naSL,
                         pnr,
-                        BlueprintZ.Defaults.PART_SEPARATOR,
+                        Main.Defaults.PART_SEPARATOR,
                         ar,
                         naSL,
                         pnr);

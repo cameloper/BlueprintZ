@@ -1,4 +1,4 @@
-package edu.kit.informatik;
+package com.cameloper.BlueprintZ;
 
 import java.util.HashMap;
 import java.util.Map;

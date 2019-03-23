@@ -1,4 +1,4 @@
-package edu.kit.informatik;
+package com.cameloper.BlueprintZ;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -104,10 +104,10 @@ class PartManager {
             String child = childrenSorted.get(i);
             Integer amount = children.get(child);
 
-            out.append(String.format("%s%s%d", child, BlueprintZ.Defaults.NAME_AMOUNT_SEPARATOR, amount));
+            out.append(String.format("%s%s%d", child, Main.Defaults.NAME_AMOUNT_SEPARATOR, amount));
 
             if (i != childrenSorted.size() - 1) {
-                out.append(BlueprintZ.Defaults.PART_SEPARATOR);
+                out.append(Main.Defaults.PART_SEPARATOR);
             }
         }
 
@@ -128,11 +128,11 @@ class PartManager {
             Part assembly = sortedParts.get(i);
             out.append(String.format("%s%s%d",
                     assembly.getId(),
-                    BlueprintZ.Defaults.NAME_AMOUNT_SEPARATOR,
+                    Main.Defaults.NAME_AMOUNT_SEPARATOR,
                     parts.get(assembly)));
 
             if (i != sortedParts.size() - 1)
-                out.append(BlueprintZ.Defaults.PART_SEPARATOR);
+                out.append(Main.Defaults.PART_SEPARATOR);
         }
 
         return out.toString();
