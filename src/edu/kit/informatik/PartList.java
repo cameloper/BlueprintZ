@@ -129,16 +129,6 @@ class PartList {
         return null;
     }
 
-    private void removeIfHasNoParents(Part part) {
-        if (!partHasParents(part))
-            parts.remove(part);
-    }
-
-    private void removeIfHasNoChildren(Part part) {
-        if (part.getChildren().isEmpty())
-            parts.remove(part);
-    }
-
     /**
      * Removes each assembly without children
      * and each component without parents
@@ -149,14 +139,18 @@ class PartList {
     }
 
     private void cleanup() {
+        ArrayList<Part> partsToRemove = new ArrayList<>();
+
         for (Part part : parts) {
-            if (part.getType() == Part.Type.ASSEMBLY)
-                removeIfHasNoChildren(part);
-            else
-                removeIfHasNoParents(part);
+            if (part.getType() == Part.Type.ASSEMBLY && part.getChildren().isEmpty())
+                partsToRemove.add(part);
+            else if (part.getType() == Part.Type.COMPONENT && !partHasParents(part))
+                partsToRemove.add(part);
         }
 
-        postRemovalCleanup();
+        for (Part part : partsToRemove) {
+            parts.remove(part);
+        }
     }
 
     /**
