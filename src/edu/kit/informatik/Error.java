@@ -77,6 +77,10 @@ class Error {
          */
         PART_IS_COMPONENT,
         /**
+         * The parent part does not have enough of child-part
+         */
+        NO_ENOUGH_PARTS,
+        /**
          * Something went wrong
          */
         OTHER;
@@ -105,6 +109,8 @@ class Error {
                     return "the part with given ID \"$p\" is an assembly.";
                 case PART_IS_COMPONENT:
                     return "the part with given ID \"$p\" is a component.";
+                case NO_ENOUGH_PARTS:
+                    return "there aren't $p child-parts in given assembly.";
                 default:
                     return "something happened. No idea tbh.";
             }

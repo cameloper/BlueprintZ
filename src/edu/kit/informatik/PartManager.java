@@ -2,8 +2,6 @@ package edu.kit.informatik;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,23 +71,13 @@ class PartManager {
             return new Result<>(null, partResult.error);
         Part part = partResult.value;
 
-        Set<Part> componentChildren = new HashSet<>();
-        PartList partList = list;
-        for (String s : part.getChildren()
-                .keySet()) {
-            Part p = partList.getPartWith(s);
-            if (p.getType() == Part.Type.COMPONENT) {
-                componentChildren.add(p);
-            }
-        }
-
         if (list.partHasParents(part)) {
             part.removeAllChildren();
         } else {
             list.removePart(part);
         }
 
-        list.removeAllWithoutParents(componentChildren);
+        list.postRemovalCleanup();
 
         return new Result<>(null, null);
     }
@@ -213,5 +201,28 @@ class PartManager {
         targetPart.addChild(id, amount);
 
         return new Result<>(null, null);
+    }
+
+    /**
+     * Removes given part from source assembly if there
+     * is enough of it
+     *
+     * @param fromId ID of source assembly
+     * @param id ID of part to remove
+     * @param amount Amount of parts to remove
+     * @return Result without value
+     */
+    Result<Void> removePart(String fromId, String id, Integer amount) {
+        Result<Part> partResult = getAssemblyWith(fromId);
+        if (!partResult.isSuccessful())
+            return new Result<>(null, partResult.error);
+        Part part = partResult.value;
+
+        if (part.removeChild(id, amount)) {
+            list.postRemovalCleanup();
+            return new Result<>(null, null);
+        } else {
+            return new Result<>(null, new Error(Error.Type.NO_ENOUGH_PARTS, amount.toString()));
+        }
     }
 }

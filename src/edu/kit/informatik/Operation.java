@@ -74,6 +74,8 @@ final class Operation {
                 return getComponents();
             case ADD_PART:
                 return addPart();
+            case REMOVE_PART:
+                return removePart();
             default:
                 return new Result<>(null, new Error(Error.Type.OTHER));
         }
@@ -144,6 +146,30 @@ final class Operation {
                 return new Result<>(null, new Error(Error.Type.NUMBER_NOT_IN_RANGE, Integer.toString(amount)));
 
             Result<Void> result = PartManager.MAIN.addPart(toId, id, amount);
+            if (result.isSuccessful()) {
+                return new Result<>(OK_STRING, null);
+            } else {
+                return new Result<>(null, result.error);
+            }
+        } catch (NumberFormatException ex) {
+            return new Result<>(null, new Error(Error.Type.NUMBER_NOT_VALID));
+        }
+    }
+
+    private Result<String> removePart() {
+        String[] parameters = parameterString.split(BlueprintZ.Defaults.SUBTRACT_LITERAL);
+        String fromId = parameters[INPUT_ID_INDEX];
+        String[] naPair = parameters[INPUT_NA_PAIR_INDEX].split(BlueprintZ.Defaults.NAME_AMOUNT_SEPARATOR);
+
+        String id = naPair[NA_PAIR_NAME_INDEX];
+        String amountString = naPair[NA_PAIR_AMOUNT_INDEX];
+
+        try {
+            int amount = Integer.parseInt(amountString);
+            if (amount < BlueprintZ.Defaults.MIN_AMOUNT)
+                return new Result<>(null, new Error(Error.Type.NUMBER_NOT_IN_RANGE, Integer.toString(amount)));
+
+            Result<Void> result = PartManager.MAIN.removePart(fromId, id, amount);
             if (result.isSuccessful()) {
                 return new Result<>(OK_STRING, null);
             } else {

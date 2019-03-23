@@ -80,6 +80,36 @@ class Part {
     }
 
     /**
+     * Removes the given id from children if there are enough
+     *
+     * @param id ID to remove
+     * @param amount How many of the ID to remove
+     * @return true if removal happened, otherwise false
+     */
+    boolean removeChild(String id, int amount) {
+        if (children.keySet().stream().noneMatch(p -> p.equals(id)))
+            return false;
+
+        for (Map.Entry<String, Integer> child : children.entrySet()) {
+            if (child.getKey().equals(id)) {
+                int currentAmount = child.getValue();
+
+                if (currentAmount < amount)
+                    return false;
+                else if (currentAmount == amount) {
+                    children.remove(child.getKey());
+                    return true;
+                } else {
+                    child.setValue(currentAmount - amount);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Replaces the current children with an empty HashMap
      */
     void removeAllChildren() {

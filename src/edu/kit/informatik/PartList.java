@@ -129,17 +129,34 @@ class PartList {
         return null;
     }
 
+    private void removeIfHasNoParents(Part part) {
+        if (!partHasParents(part))
+            parts.remove(part);
+    }
+
+    private void removeIfHasNoChildren(Part part) {
+        if (part.getChildren().isEmpty())
+            parts.remove(part);
+    }
+
     /**
-     * Removes all parts in given set from list, that
-     * doesn't have any parents.
-     *
-     * @param parts Set of parts to check
+     * Removes each assembly without children
+     * and each component without parents
      */
-    void removeAllWithoutParents(Set<Part> parts) {
+    void postRemovalCleanup() {
+        cleanup();
+        cleanup();
+    }
+
+    private void cleanup() {
         for (Part part : parts) {
-            if (!partHasParents(part))
-                this.parts.remove(part);
+            if (part.getType() == Part.Type.ASSEMBLY)
+                removeIfHasNoChildren(part);
+            else
+                removeIfHasNoParents(part);
         }
+
+        postRemovalCleanup();
     }
 
     /**
