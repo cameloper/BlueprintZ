@@ -192,14 +192,21 @@ class PartManager {
      * @return Result without value
      */
     Result<Void> addPart(String toId, String id, Integer amount) {
-        Result<Part> partResult = getAssemblyWith(toId);
-        if (!partResult.isSuccessful())
-            return new Result<>(null, partResult.error);
-        Part targetPart = partResult.value;
+        PartList newList = new PartList(list);
+        if (!newList.contains(toId))
+            return new Result<>(null, new Error(Error.Type.PART_DOESNT_EXIST, toId));
+        Part targetPart = newList.getPartWith(toId);
+        if (targetPart.getType() == Part.Type.COMPONENT)
+            return new Result<>(null, new Error(Error.Type.PART_IS_COMPONENT, toId));
 
-        list.addIfNotPresent(id);
+        newList.addIfNotPresent(id);
         targetPart.addChild(id, amount);
+        String cycleRoot = newList.cycleRoot();
+        if (cycleRoot != null) {
+            return new Result<>(null, new Error(Error.Type.NOT_ACYCLIC, cycleRoot));
+        }
 
+        list = newList;
         return new Result<>(null, null);
     }
 
