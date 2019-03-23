@@ -121,12 +121,26 @@ class PartList {
     }
 
     /**
+     * Removes all parts in given set from list, that
+     * doesn't have any parents.
+     *
+     * @param parts Set of parts to check
+     */
+    void removeAllWithoutParents(Set<Part> parts) {
+        for (Part part : parts) {
+            if (!partHasParents(part))
+                this.parts.remove(part);
+        }
+    }
+
+    /**
      * Searches through children of each part for the given ID
      *
-     * @param id ID of part to search for
+     * @param  part Part to search for
      * @return true if any other part has the given ID as child
      */
-    boolean partHasParents(String id) {
+    boolean partHasParents(Part part) {
+        String id = part.getId();
         return parts.stream().anyMatch(p -> p.getChildren().keySet().stream().anyMatch(s -> s.equals(id)));
     }
 

@@ -1,8 +1,10 @@
 package edu.kit.informatik;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 class PartManager {
@@ -75,11 +77,23 @@ class PartManager {
             return new Result<>(null, partResult.error);
         Part part = partResult.value;
 
-        if (list.partHasParents(id)) {
+        Set<Part> componentChildren = new HashSet<>();
+        PartList partList = list;
+        for (String s : part.getChildren()
+                .keySet()) {
+            Part p = partList.getPartWith(s);
+            if (p.getType() == Part.Type.COMPONENT) {
+                componentChildren.add(p);
+            }
+        }
+
+        if (list.partHasParents(part)) {
             part.removeAllChildren();
         } else {
             list.removePart(part);
         }
+
+        list.removeAllWithoutParents(componentChildren);
 
         return new Result<>(null, null);
     }
