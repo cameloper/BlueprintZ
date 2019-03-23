@@ -3,8 +3,15 @@ package edu.kit.informatik;
 import java.util.HashMap;
 
 final class Operation {
-    private static final String COMMAND_PARAMETER_SEPARATOR = " ";
 
+    private static final int INPUT_COMMAND_INDEX = 0;
+    private static final int INPUT_PARAMETER_INDEX = 1;
+    private static final int INPUT_ID_INDEX = 0;
+    private static final int INPUT_NA_PAIR_INDEX = 1;
+    private static final int NA_PAIR_NAME_INDEX = 1;
+    private static final int NA_PAIR_AMOUNT_INDEX = 0;
+
+    private static final String OK_STRING = "OK";
     private final Command command;
     private final String parameterString;
 
@@ -20,18 +27,18 @@ final class Operation {
      * @return Result of the build
      */
     static Result<Operation> buildWith(String input) {
-        String[] cmdComponents = input.split(COMMAND_PARAMETER_SEPARATOR);
+        String[] cmdComponents = input.split(BlueprintZ.Defaults.COMMAND_PARAMETER_SEPARATOR);
         if (cmdComponents.length < 1)
             return new Result<>(null, new Error(Error.Type.NO_INPUT));
 
-        Command cmd = Command.build(cmdComponents[0]);
+        Command cmd = Command.build(cmdComponents[INPUT_COMMAND_INDEX]);
         if (cmd == null)
             return new Result<>(null, new Error(Error.Type.CMD_NOT_VALID));
 
         String parameters = "";
 
         if (cmdComponents.length == 2)
-            parameters = cmdComponents[1];
+            parameters = cmdComponents[INPUT_PARAMETER_INDEX];
 
         return new Result<>(new Operation(cmd, parameters), null);
     }
@@ -65,28 +72,33 @@ final class Operation {
                 return getAssemblies();
             case GET_COMPONENTS:
                 return getComponents();
+            case ADD_PART:
+                return addPart();
             default:
                 return new Result<>(null, new Error(Error.Type.OTHER));
         }
     }
 
     private Result<String> addAssembly() {
-        String[] parameters = parameterString.split("=");
-
-        String id = parameters[0];
+        String[] parameters = parameterString.split(BlueprintZ.Defaults.SETTER_LITERAL);
+        String id = parameters[INPUT_ID_INDEX];
 
         try {
             HashMap<String, Integer> children = new HashMap<>();
-            for (String s : parameters[1].split(";")) {
-                String[] p = s.split(":");
-                if (children.keySet().stream().anyMatch(sp -> sp.equals(p[1])))
-                    return new Result<>(null, new Error(Error.Type.MULTIPLE_PART_REFERENCES, p[1]));
-                children.put(p[1], Integer.parseInt(p[0]));
+            for (String naPairString : parameters[INPUT_NA_PAIR_INDEX].split(BlueprintZ.Defaults.PART_SEPARATOR)) {
+                String[] naPair = naPairString.split(BlueprintZ.Defaults.NAME_AMOUNT_SEPARATOR);
+                String name = naPair[NA_PAIR_NAME_INDEX];
+                if (children.keySet().stream().anyMatch(sp -> sp.equals(name)))
+                    return new Result<>(null, new Error(Error.Type.MULTIPLE_PART_REFERENCES, name));
+                Integer amount = Integer.parseInt(naPair[NA_PAIR_AMOUNT_INDEX]);
+                if (amount < BlueprintZ.Defaults.MIN_AMOUNT)
+                    return new Result<>(null, new Error(Error.Type.NUMBER_NOT_IN_RANGE, amount.toString()));
+                children.put(name, amount);
             }
 
             Result<Void> result = PartManager.MAIN.addAssemblyWith(id, children);
             if (result.isSuccessful()) {
-                return new Result<>("OK", null);
+                return new Result<>(OK_STRING, null);
             } else {
                 return new Result<>(null, result.error);
             }
@@ -100,7 +112,7 @@ final class Operation {
         Result<Void> result = PartManager.MAIN.removeAssemblyWith(parameterString);
 
         if (result.isSuccessful()) {
-            return new Result<>("OK", null);
+            return new Result<>(OK_STRING, null);
         } else {
             return new Result<>(null, result.error);
         }
@@ -116,5 +128,29 @@ final class Operation {
 
     private Result<String> getComponents() {
         return PartManager.MAIN.getComponentsOf(parameterString);
+    }
+
+    private Result<String> addPart() {
+        String[] parameters = parameterString.split("\\" + BlueprintZ.Defaults.ADD_LITERAL);
+        String toId = parameters[INPUT_ID_INDEX];
+        String[] naPair = parameters[INPUT_NA_PAIR_INDEX].split(BlueprintZ.Defaults.NAME_AMOUNT_SEPARATOR);
+
+        String id = naPair[NA_PAIR_NAME_INDEX];
+        String amountString = naPair[NA_PAIR_AMOUNT_INDEX];
+
+        try {
+            int amount = Integer.parseInt(amountString);
+            if (amount < BlueprintZ.Defaults.MIN_AMOUNT)
+                return new Result<>(null, new Error(Error.Type.NUMBER_NOT_IN_RANGE, Integer.toString(amount)));
+
+            Result<Void> result = PartManager.MAIN.addPart(toId, id, amount);
+            if (result.isSuccessful()) {
+                return new Result<>(OK_STRING, null);
+            } else {
+                return new Result<>(null, result.error);
+            }
+        } catch (NumberFormatException ex) {
+            return new Result<>(null, new Error(Error.Type.NUMBER_NOT_VALID));
+        }
     }
 }

@@ -36,10 +36,6 @@ class PartManager {
      * @return Result without a value
      */
     Result<Void> addAssemblyWith(String id, HashMap<String, Integer> children) {
-        if (children.values().stream().anyMatch(v -> v < 1)) {
-            return new Result<>(null, new Error(Error.Type.NUMBER_NOT_IN_RANGE));
-        }
-
         Part existingPart = list.getPartWith(id);
         if (existingPart != null && existingPart.getType() == Part.Type.ASSEMBLY) {
             return new Result<>(null, new Error(Error.Type.ASSEMBLY_ALREADY_EXISTS, id));
@@ -53,7 +49,7 @@ class PartManager {
             newList.getPartWith(id).addChildren(children);
         }
 
-        newList.addIfNotPresent(children.keySet());
+        newList.addAllIfNotPresent(children.keySet());
 
         String cycleRoot = newList.cycleRoot();
         if (cycleRoot != null) {
@@ -120,10 +116,10 @@ class PartManager {
             String child = childrenSorted.get(i);
             Integer amount = children.get(child);
 
-            out.append(String.format("%s:%d", child, amount));
+            out.append(String.format("%s%s%d", child, BlueprintZ.Defaults.NAME_AMOUNT_SEPARATOR, amount));
 
             if (i != childrenSorted.size() - 1) {
-                out.append(";");
+                out.append(BlueprintZ.Defaults.PART_SEPARATOR);
             }
         }
 
@@ -142,10 +138,13 @@ class PartManager {
         StringBuilder out = new StringBuilder();
         for (int i = 0; i < sortedParts.size(); i++) {
             Part assembly = sortedParts.get(i);
-            out.append(String.format("%s:%d", assembly.getId(), parts.get(assembly)));
+            out.append(String.format("%s%s%d",
+                    assembly.getId(),
+                    BlueprintZ.Defaults.NAME_AMOUNT_SEPARATOR,
+                    parts.get(assembly)));
 
             if (i != sortedParts.size() - 1)
-                out.append(";");
+                out.append(BlueprintZ.Defaults.PART_SEPARATOR);
         }
 
         return out.toString();
@@ -193,5 +192,25 @@ class PartManager {
         String out = sortAndBuildString(components);
 
         return new Result<>(out, null);
+    }
+
+    /**
+     * Adds the part with given ID to the part with given ID.
+     * If the source part does not exist, creates it first.
+     *
+     * @param toId ID of the target part
+     * @param id ID of the source part
+     * @param amount Amount of source part in target part
+     * @return Result without value
+     */
+    Result<Void> addPart(String toId, String id, Integer amount) {
+        if (!list.contains(toId))
+            return new Result<>(null, new Error(Error.Type.PART_DOESNT_EXIST, toId));
+
+        Part targetPart = list.getPartWith(toId);
+        list.addIfNotPresent(id);
+        targetPart.addChild(id, amount);
+
+        return new Result<>(null, null);
     }
 }

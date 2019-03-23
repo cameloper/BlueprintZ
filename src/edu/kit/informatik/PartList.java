@@ -52,16 +52,25 @@ class PartList {
     }
 
     /**
+     * Adds a new Part with the given ID in PartList
+     *
+     * @param id ID of new part
+     */
+    void addIfNotPresent(String id) {
+        if (!contains(id)) {
+            parts.add(new Part(id, new HashMap<>()));
+        }
+    }
+
+    /**
      * Adds a new Part with each ID in the given set, if they
      * are not already present.
      *
      * @param ids IDs of the parts to add
      */
-    void addIfNotPresent(Set<String> ids) {
+    void addAllIfNotPresent(Set<String> ids) {
         for (String id : ids) {
-            if (!contains(id)) {
-                parts.add(new Part(id, new HashMap<>()));
-            }
+            addIfNotPresent(id);
         }
     }
 

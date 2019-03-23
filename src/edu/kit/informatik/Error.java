@@ -94,7 +94,7 @@ class Error {
                 case NUMBER_NOT_VALID:
                     return "one or more of the given numbers are not in correct format.";
                 case NUMBER_NOT_IN_RANGE:
-                    return "at least one given number is not in the accepted range (1-1000).";
+                    return "the number \"$p\" is not in the accepted range (1-1000).";
                 case ASSEMBLY_ALREADY_EXISTS:
                     return "the assembly with id \"$p\" already exists.";
                 case NOT_ACYCLIC:

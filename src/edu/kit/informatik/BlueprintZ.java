@@ -63,5 +63,33 @@ public class BlueprintZ {
          * Regex rules for amount inputs
          */
         static final String AMOUNT_REGEX = "(1000|([0-9]{1,3}))";
+        /**
+         * String literal to use when separating commands and parameters
+         */
+        static final String COMMAND_PARAMETER_SEPARATOR = " ";
+        /**
+         * String literal to use when separating names and amounts
+         */
+        static final String NAME_AMOUNT_SEPARATOR = ":";
+        /**
+         * String literal to use when separating parts
+         */
+        static final String PART_SEPARATOR = ";";
+        /**
+         * String literal to use when setting an assembly
+         */
+        static final String SETTER_LITERAL = "=";
+        /**
+         * String literal to use when adding to an assembly
+         */
+        static final String ADD_LITERAL = "+";
+        /**
+         * String literal to use when subtracting from an assembly
+         */
+        static final String SUBTRACT_LITERAL = "-";
+        /**
+         * Minimum value of an amount variable
+         */
+        static final int MIN_AMOUNT = 1;
     }
 }
